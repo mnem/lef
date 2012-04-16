@@ -74,8 +74,8 @@ function love.load()
 end
 ```
 
-[rl]:   http://www.richardlord.net/blog
-[rl_1]: http://www.richardlord.net/blog/what-is-an-entity-framework
-[rl]_2: http://www.richardlord.net/blog/why-use-an-entity-framework
-[ld]:   http://www.ludumdare.com/compo/
-[love]  http://love2d.org/
+[rl]:    http://www.richardlord.net/blog
+[rl_1]:  http://www.richardlord.net/blog/what-is-an-entity-framework
+[rl]_2]: http://www.richardlord.net/blog/why-use-an-entity-framework
+[ld]:    http://www.ludumdare.com/compo/
+[love]:  http://love2d.org/
