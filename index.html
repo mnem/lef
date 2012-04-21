@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Lef by mnem</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Lef</h1>
+        <p>Simple entity framework for lua.</p>
+        <p class="view"><a href="https://github.com/mnem/lef">View the Project on GitHub <small>mnem/lef</small></a></p>
+        <ul>
+          <li><a href="https://github.com/mnem/lef/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/mnem/lef/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/mnem/lef">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>Written with <a href="http://love2d.org/">LÖVE</a> in mind, but will
+probably for any implementation of <a href="http://lua.org/">lua</a> 5.1 or above.</p>
+
+<p>If you want a decent overview of entity frameworks and why they are
+useful, have a read of these blog post by <a href="http://www.richardlord.net/blog">Richard Lord</a>:</p>
+
+<ul>
+<li><a href="http://www.richardlord.net/blog/what-is-an-entity-framework">What is an entity framework for game development?</a></li>
+<li><a href="http://www.richardlord.net/blog/why-use-an-entity-framework">Why use an entity framework for game development?</a></li>
+</ul><p>lef isn't as advanced as the frameworks mentioned in those articles,
+but it's good enough to play around with in lua. I'll probably use it
+in the next <a href="http://www.ludumdare.com/compo/">Ludum Dare</a> I play along with, so no doubt there will be
+lots of changes made to this after that.</p>
+
+<p>Here's a very simple example if you are using <a href="http://love2d.org/">LÖVE</a>. It creates
+an image which follows the mouse cursor around.</p>
+
+<div class="highlight">
+<pre><span class="c1">-- Load the module</span>
+<span class="kd">local</span> <span class="n">lef</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">'</span><span class="s">nah.lef'</span>
+
+<span class="c1">----------------------------------------</span>
+<span class="c1">-- Register some components</span>
+<span class="n">lef</span><span class="p">.</span><span class="n">registerComponentFactory</span><span class="p">(</span><span class="s1">'</span><span class="s">position'</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="k">return</span> <span class="p">{</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">}</span> <span class="k">end</span> <span class="p">)</span>
+<span class="n">lef</span><span class="p">.</span><span class="n">registerComponentFactory</span><span class="p">(</span><span class="s1">'</span><span class="s">renderable'</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="k">return</span> <span class="p">{</span><span class="n">image</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">}</span> <span class="k">end</span> <span class="p">)</span>
+
+<span class="c1">----------------------------------------</span>
+<span class="c1">-- Create some systems</span>
+<span class="n">lef</span><span class="p">.</span><span class="n">addSystem</span><span class="p">(</span><span class="s1">'</span><span class="s">render'</span><span class="p">,</span> <span class="s1">'</span><span class="s">draw images'</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">entity</span> <span class="k">in</span> <span class="nb">ipairs</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span> <span class="k">do</span>
+        <span class="kd">local</span> <span class="n">pos</span><span class="p">,</span> <span class="n">img</span> <span class="o">=</span> <span class="n">lef</span><span class="p">.</span><span class="n">entityComponents</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="s1">'</span><span class="s">position'</span><span class="p">,</span> <span class="s1">'</span><span class="s">renderable'</span><span class="p">)</span>
+        <span class="n">love</span><span class="p">.</span><span class="n">graphics</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">img</span><span class="p">.</span><span class="n">image</span><span class="p">,</span> <span class="n">pos</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="p">.</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span><span class="p">,</span> <span class="s1">'</span><span class="s">position'</span><span class="p">,</span> <span class="s1">'</span><span class="s">renderable'</span><span class="p">)</span>
+
+<span class="n">lef</span><span class="p">.</span><span class="n">addSystem</span><span class="p">(</span><span class="s1">'</span><span class="s">logic'</span><span class="p">,</span> <span class="s1">'</span><span class="s">follow mouse'</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">entity</span> <span class="k">in</span> <span class="nb">ipairs</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span> <span class="k">do</span>
+        <span class="kd">local</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">lef</span><span class="p">.</span><span class="n">entityComponents</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="s1">'</span><span class="s">position'</span><span class="p">)</span>
+        <span class="n">pos</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">love</span><span class="p">.</span><span class="n">mouse</span><span class="p">.</span><span class="n">getX</span><span class="p">()</span>
+        <span class="n">pos</span><span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">love</span><span class="p">.</span><span class="n">mouse</span><span class="p">.</span><span class="n">getY</span><span class="p">()</span>
+    <span class="k">end</span>
+<span class="k">end</span><span class="p">,</span> <span class="s1">'</span><span class="s">position'</span><span class="p">,</span> <span class="s1">'</span><span class="s">active cursor'</span><span class="p">)</span>
+
+<span class="c1">----------------------------------------</span>
+<span class="c1">-- Update the systems</span>
+<span class="k">function</span> <span class="nc">love</span><span class="p">.</span><span class="nf">update</span><span class="p">()</span>
+    <span class="n">lef</span><span class="p">.</span><span class="n">updateSystem</span><span class="p">(</span><span class="s1">'</span><span class="s">logic'</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="nc">love</span><span class="p">.</span><span class="nf">draw</span><span class="p">()</span>
+    <span class="n">lef</span><span class="p">.</span><span class="n">updateSystem</span><span class="p">(</span><span class="s1">'</span><span class="s">render'</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="c1">----------------------------------------</span>
+<span class="c1">-- Add some entites when it loads</span>
+<span class="k">function</span> <span class="nc">love</span><span class="p">.</span><span class="nf">load</span><span class="p">()</span>
+    <span class="c1">-- Create the entity that follows the cursor</span>
+    <span class="kd">local</span> <span class="n">cursimg</span> <span class="o">=</span> <span class="n">lef</span><span class="p">.</span><span class="n">addEntityComponents</span><span class="p">(</span><span class="s1">'</span><span class="s">cursor'</span><span class="p">,</span> <span class="s1">'</span><span class="s">renderable'</span><span class="p">,</span> <span class="s1">'</span><span class="s">active cursor'</span><span class="p">,</span> <span class="s1">'</span><span class="s">position'</span><span class="p">)</span>
+    <span class="n">cursimg</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">love</span><span class="p">.</span><span class="n">graphics</span><span class="p">.</span><span class="n">newImage</span><span class="p">(</span><span class="s1">'</span><span class="s">sheep.png'</span><span class="p">)</span>
+
+    <span class="c1">-- Place some other random entites which will be rendered but</span>
+    <span class="c1">-- will not follow the cursor</span>
+    <span class="kd">local</span> <span class="n">img</span><span class="p">,</span> <span class="n">pos</span>
+    <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span> <span class="k">do</span>
+        <span class="c1">-- Using a new empty table for each entity because we don't really</span>
+        <span class="c1">-- care what it is in this example.</span>
+        <span class="n">img</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">lef</span><span class="p">.</span><span class="n">addEntityComponents</span><span class="p">({},</span> <span class="s1">'</span><span class="s">renderable'</span><span class="p">,</span> <span class="s1">'</span><span class="s">position'</span><span class="p">)</span>
+        <span class="n">img</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">cursimg</span><span class="p">.</span><span class="n">image</span>
+        <span class="n">pos</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">800</span> <span class="o">*</span> <span class="nb">math.random</span><span class="p">()</span>
+        <span class="n">pos</span><span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">600</span> <span class="o">*</span> <span class="nb">math.random</span><span class="p">()</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/mnem">mnem</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    
+  </body>
+</html>
